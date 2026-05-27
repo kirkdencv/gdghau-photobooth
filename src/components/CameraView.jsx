@@ -15,6 +15,54 @@ const vt = { fontFamily: "'VT323', monospace" };
 
 const EMPTY_STICKERS = [];
 
+// --- AUDIO HELPERS ---
+const playBeep = (freq = 440, type = 'sine', duration = 0.1, vol = 0.05) => {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+  } catch (e) {
+    console.warn("Audio play failed", e);
+  }
+};
+
+const playShutter = () => {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const bufferSize = audioCtx.sampleRate * 0.1; // 100ms noise
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    
+    // Filter to sound like a mechanical click
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 1000;
+    
+    const gain = audioCtx.createGain();
+    gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+    
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(audioCtx.destination);
+    noise.start();
+  } catch (e) {
+    console.warn("Audio play failed", e);
+  }
+};
+
 export default function CameraView({
   onCaptureComplete,
   onBack,
@@ -213,10 +261,20 @@ export default function CameraView({
     setCountdown(10);
     setCurrentShotIndex(shotIndex);
     let count = 10;
+    
+    // Play initial beep for the start of countdown
+    playBeep(440, 'sine', 0.1, 0.05);
+
     if (countdownIntervalRef.current) clearInterval(countdownIntervalRef.current);
     countdownIntervalRef.current = setInterval(() => {
       count--;
       setCountdown(count);
+      
+      if (count > 0) {
+        if (count <= 3) playBeep(880, 'sine', 0.1, 0.1); // Higher pitch for last 3 seconds
+        else playBeep(440, 'sine', 0.1, 0.05);
+      }
+
       if (count <= 0) {
         clearInterval(countdownIntervalRef.current);
         takePhoto(shotIndex);
@@ -229,15 +287,8 @@ export default function CameraView({
     if (!video) return;
     setFlash(true);
     setTimeout(() => setFlash(false), 800);
-    try {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination);
-      osc.type = 'sine'; osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      osc.start(); osc.stop(audioCtx.currentTime + 0.15);
-    } catch (e) { }
+    
+    playShutter();
 
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth || 1280;
@@ -278,11 +329,17 @@ export default function CameraView({
   };
 
   return (
-    <div className="crt-overlay noise-bg min-h-screen bg-[#080808] text-[#e0e0e0] flex flex-col overflow-hidden" style={mono}>
+    <div className="crt-overlay noise-bg grid-bg min-h-screen bg-[#050505] text-[#e0e0e0] flex flex-col overflow-hidden relative" style={mono}>
+      {/* Ambient Glows */}
+      <div className="ambient-glow ambient-tl"></div>
+      <div className="ambient-glow ambient-tr"></div>
+      <div className="ambient-glow ambient-bl"></div>
+      <div className="ambient-glow ambient-br"></div>
+
       {flash && <div className="fixed inset-0 z-50 pointer-events-none animate-flash bg-white" />}
 
       {/* Header HUD bar */}
-      <header className="relative z-20 border-b-2 border-[#1a1a1a] px-8 py-5 flex items-center justify-between bg-[#0a0a0a]">
+      <header className="relative z-20 border-b border-[#1a1a1a] px-8 py-5 flex items-center justify-between bg-black/40 backdrop-blur-md">
         <div className="flex items-center gap-4">
           <div className="w-4 h-4 rounded-full bg-[#ff003c] rec-dot" />
           <span className="text-sm font-bold text-[#ff003c] tracking-[0.3em] uppercase">NODE 01: ENTITY CAPTURE</span>
@@ -301,7 +358,7 @@ export default function CameraView({
       <main className="relative z-10 flex-grow flex flex-col lg:flex-row gap-0">
 
         {/* Camera feed — takes almost entire screen */}
-        <div className="flex-grow relative flex flex-col items-center justify-center p-4 lg:p-8 bg-[#111]">
+        <div className="flex-grow relative flex flex-col items-center justify-center p-4 lg:p-8 bg-transparent">
           {/* Camera viewport */}
           <div className="relative w-full max-w-6xl aspect-video border-4 border-[#222] rounded-md overflow-hidden bg-black shadow-[0_0_50px_rgba(0,0,0,0.8)]">
 
@@ -394,7 +451,7 @@ export default function CameraView({
           {/* Bottom strip: Camera source + stickers */}
           <div className="w-full max-w-6xl mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Source selector */}
-            <div className="cyber-panel p-6 relative bg-[#111]">
+            <div className="cyber-panel p-6 relative bg-black/40 backdrop-blur-md">
               <div className="text-[#00f5ff] text-xs font-bold tracking-[0.25em] mb-4 uppercase">// INPUT SOURCE</div>
               <div className="flex items-center gap-3">
                 <select
@@ -416,7 +473,7 @@ export default function CameraView({
             </div>
 
             {/* Stickers picker */}
-            <div className="cyber-panel p-6 bg-[#111]">
+            <div className="cyber-panel p-6 bg-black/40 backdrop-blur-md">
               <div className="text-[#f5e642] text-xs font-bold tracking-[0.25em] mb-4 uppercase">// FACE OVERLAYS</div>
               <div className="flex flex-wrap gap-4 items-center">
                 {STICKER_TEMPLATES.map(emoji => (
@@ -437,7 +494,7 @@ export default function CameraView({
         </div>
 
         {/* Right Control Panel */}
-        <div className="w-full lg:w-48 flex lg:flex-col items-center justify-center gap-6 border-l-4 border-[#1a1a1a] bg-[#0a0a0a] p-6 overflow-y-auto">
+        <div className="w-full lg:w-48 flex lg:flex-col items-center justify-center gap-6 border-l border-[#1a1a1a] bg-black/40 backdrop-blur-md p-6 overflow-y-auto relative z-10">
 
           {/* Filter button */}
           <div className="w-full flex flex-col items-center gap-2">

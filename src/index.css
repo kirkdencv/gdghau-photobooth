@@ -242,3 +242,39 @@ select option { background: var(--cyber-dark); }
     linear-gradient(90deg, rgba(0, 245, 255, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
+
+/* ============ AMBIENT CORNER GLOWS ============ */
+.ambient-glow {
+  position: fixed;
+  width: 50vw;
+  height: 50vh;
+  filter: blur(120px);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ambient-tl {
+  top: -10vh;
+  left: -10vw;
+  background: #4285F4; /* Google Blue */
+}
+
+.ambient-tr {
+  top: -10vh;
+  right: -10vw;
+  background: #EA4335; /* Google Red */
+}
+
+.ambient-bl {
+  bottom: -10vh;
+  left: -10vw;
+  background: #FBBC05; /* Google Yellow */
+}
+
+.ambient-br {
+  bottom: -10vh;
+  right: -10vw;
+  background: #34A853; /* Google Green */
+}
+
