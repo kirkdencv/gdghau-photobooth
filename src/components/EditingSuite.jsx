@@ -120,9 +120,15 @@ export default function EditingSuite({ photos, onUpdatePhotos, onNext, onRetakeP
   const selectedSticker = activePhoto.stickers.find(s => s.id === selectedStickerId);
 
   return (
-    <div className="crt-overlay noise-bg min-h-screen bg-[#080808] text-[#e0e0e0] flex flex-col" style={mono}>
+    <div className="crt-overlay noise-bg grid-bg min-h-screen bg-[#050505] text-[#e0e0e0] flex flex-col relative overflow-hidden" style={mono}>
+      {/* Ambient Glows */}
+      <div className="ambient-glow ambient-tl"></div>
+      <div className="ambient-glow ambient-tr"></div>
+      <div className="ambient-glow ambient-bl"></div>
+      <div className="ambient-glow ambient-br"></div>
+
       {/* Header */}
-      <div className="border-b border-[#1a1a1a] px-6 py-3 bg-[#0a0a0a] flex items-center justify-between">
+      <div className="relative z-20 border-b border-[#1a1a1a] px-6 py-3 bg-black/40 backdrop-blur-md flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 bg-[#f5e642]" />
           <span className="text-[#f5e642] text-[10px] tracking-[0.3em] uppercase">NODE 02: DATA MODIFICATION</span>
@@ -180,7 +186,7 @@ export default function EditingSuite({ photos, onUpdatePhotos, onNext, onRetakeP
         </div>
 
         {/* Right: Controls */}
-        <div className="w-full lg:w-64 border-l border-[#1a1a1a] bg-[#0a0a0a] p-4 flex flex-col gap-5">
+        <div className="relative z-20 w-full lg:w-64 border-l border-[#1a1a1a] bg-black/40 backdrop-blur-md p-4 flex flex-col gap-5">
           {/* Thumbnail switcher */}
           <div>
             <div className="text-[#f5e642] text-[9px] tracking-[0.25em] mb-3 uppercase">// SELECT SHOT</div>
