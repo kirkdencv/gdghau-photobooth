@@ -10,7 +10,7 @@ export default function HomeView({ onStart }) {
 
   return (
     <div className="crt-overlay noise-bg grid-bg min-h-screen bg-[#050505] text-[#e0e0e0] flex flex-col overflow-hidden relative" style={{ fontFamily: "'Share Tech Mono', monospace" }}>
-      
+
       {/* Ambient Glows */}
       <div className="ambient-glow ambient-tl"></div>
       <div className="ambient-glow ambient-tr"></div>
@@ -21,7 +21,7 @@ export default function HomeView({ onStart }) {
       <header className="relative z-20 px-8 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-3 h-3 rounded-full bg-[#00f5ff] rec-dot" />
-          <span className="text-sm md:text-base font-bold text-[#00f5ff] tracking-[0.4em] uppercase">SYS.NODE.00</span>
+          <span className="text-sm md:text-base font-bold text-[#00f5ff] tracking-[0.4em] uppercase">GDG ON CAMPUS HAU</span>
         </div>
         <div className="flex items-center gap-4 text-[#888] text-xs md:text-sm font-bold tracking-widest uppercase">
           <span className="text-[#555]">[</span>
@@ -50,7 +50,7 @@ export default function HomeView({ onStart }) {
         </h1>
 
         <div className="text-[#00f5ff] text-sm md:text-lg font-bold tracking-[0.4em] uppercase mb-16 opacity-80" style={{ fontFamily: "'Share Tech Mono', monospace" }}>
-          GDG ON CAMPUS HAU
+          GDG ON CAMPUS HAU - OVERRIDE 2026
         </div>
 
         {/* Minimal CTA */}
@@ -72,7 +72,8 @@ export default function HomeView({ onStart }) {
 
       {/* Bottom Footer - Minimal */}
       <footer className="relative z-20 px-8 py-6 flex items-center justify-between text-[#444] text-xs font-bold tracking-widest uppercase">
-        <div>V 2.0.26</div>
+        <div>© 2026 GDG ON CAMPUS HAU. All rights reserved.
+        </div>
         <div>SECURE CONNECTION</div>
       </footer>
     </div>
