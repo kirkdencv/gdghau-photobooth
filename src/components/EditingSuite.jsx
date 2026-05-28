@@ -121,12 +121,6 @@ export default function EditingSuite({ photos, onUpdatePhotos, onNext, onRetakeP
 
   return (
     <div className="crt-overlay noise-bg grid-bg min-h-screen bg-[#050505] text-[#e0e0e0] flex flex-col relative overflow-hidden" style={mono}>
-      {/* Ambient Glows */}
-      <div className="ambient-glow ambient-tl"></div>
-      <div className="ambient-glow ambient-tr"></div>
-      <div className="ambient-glow ambient-bl"></div>
-      <div className="ambient-glow ambient-br"></div>
-
       {/* Header */}
       <div className="relative z-20 border-b border-[#1a1a1a] px-6 py-3 bg-black/40 backdrop-blur-md flex items-center justify-between">
         <div className="flex items-center gap-3">
