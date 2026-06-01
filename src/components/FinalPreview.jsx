@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
 
 const FILTERS = [
   { id: 'none', filterStr: 'none' },
@@ -19,17 +18,11 @@ const TEMPLATE_URL = '/template.png';
 export default function FinalPreview({ photos, onReset }) {
   const [compositeUrl, setCompositeUrl] = useState('');
   const [loading, setLoading] = useState(true);
-  const [shareLink, setShareLink] = useState('');
   const [email, setEmail] = useState('');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [emailSuccess, setEmailSuccess] = useState(false);
   const [emailError, setEmailError] = useState('');
   const hiddenCanvasRef = useRef(null);
-
-  useEffect(() => {
-    const randomId = Math.random().toString(36).substring(2, 11);
-    setShareLink(`https://gdg-photobooth.web.app/share/${randomId}`);
-  }, []);
 
   const handleEmailSend = (e) => {
     e.preventDefault();
@@ -266,15 +259,6 @@ export default function FinalPreview({ photos, onReset }) {
             <p className="text-[#333] text-[10px] leading-relaxed tracking-wider">
               DOWNLOAD THE COMPILED STRIP OR EXTRACT INDIVIDUAL SHOTS TO YOUR DEVICE.
             </p>
-          </div>
-
-          {/* QR Code */}
-          <div className="cyber-panel p-4 flex flex-col items-center gap-3 text-center">
-            <span className="text-[#f5e642] text-[9px] tracking-[0.25em] uppercase">// SCAN &amp; SHARE</span>
-            <div className="bg-white p-2">
-              <QRCodeSVG value={shareLink} size={100} fgColor="#080808" level="M" />
-            </div>
-            <code className="text-[8px] text-[#333] break-all block" style={mono}>{shareLink}</code>
           </div>
 
           {/* Email Delivery */}
