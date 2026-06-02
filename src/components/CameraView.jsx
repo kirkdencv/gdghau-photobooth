@@ -78,7 +78,7 @@ export default function CameraView({
 
   const [isCapturingSession, setIsCapturingSession] = useState(false);
   const [currentShotIndex, setCurrentShotIndex] = useState(targetRetakeIndex);
-  const [countdown, setCountdown] = useState(10);
+  const [countdown, setCountdown] = useState(5);
   const [capturedPhotos, setCapturedPhotos] = useState([]);
   const [flash, setFlash] = useState(false);
 
@@ -258,9 +258,9 @@ export default function CameraView({
   };
 
   const runCountdown = (shotIndex) => {
-    setCountdown(10);
+    setCountdown(5);
     setCurrentShotIndex(shotIndex);
-    let count = 10;
+    let count = 5;
     
     // Play initial beep for the start of countdown
     playBeep(440, 'sine', 0.1, 0.05);
